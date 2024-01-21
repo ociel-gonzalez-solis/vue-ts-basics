@@ -1,14 +1,22 @@
 <script setup lang="ts">
+import PokemonCardList from '../components/PokemonCardList.vue';
+import { usePokemons } from '../composables/usePokemons';
 
+const { count, isLoading, pokemons, isError, error } = usePokemons();
 </script>
 
 <template>
-    <div>
-        <h1>Pokemon List</h1>
-    </div>
+  <h1 v-if="isLoading">IS LOADING</h1>
+  
+  <div v-else-if="isError">
+    {{ error }}
+  </div>
+
+  <div v-else>
+    <h1>Pokemon List - ({{ count }})</h1>
+
+    <PokemonCardList :pokemons="pokemons ?? []" />
+  </div>
 </template>
 
-
-<style scoped>
-
-</style>
+<style scoped></style>
