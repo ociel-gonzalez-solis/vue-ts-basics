@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { IRouterLink } from '../../router/list-routes'
+import { computed, toRef } from 'vue';
+import type { IRouterLink } from '@/router/list-routes'
 
 interface Props {
   title      ?: string
@@ -7,10 +8,15 @@ interface Props {
   isSecondary?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   title      : 'CompoApp',
   isSecondary: false
 })
+
+// const links = props.links; //Pierde la reactividad
+// const links = toRef(props, 'links'); // Opcion #1 que sirve (usar un filtering)
+
+const links = computed(() => props.links.filter(link => link.visible));
 
 </script>
 
@@ -21,7 +27,7 @@ withDefaults(defineProps<Props>(), {
       <span>{{ $props.title }}</span>
     </template>
     
-    <RouterLink v-for="link in $props.links" :key="link.name" :to="link.path">
+    <RouterLink v-for="link in links" :key="link.name" :to="link.path">
       {{ link.title }}
     </RouterLink>
   </nav>
@@ -30,11 +36,11 @@ withDefaults(defineProps<Props>(), {
 <style scoped>
 nav {
   align-items: center;
-  display: flex;
-  font-size: 12px;
-  margin-top: 10px;
-  text-align: center;
-  width: 100%;
+  display    : flex;
+  font-size  : 12px;
+  margin-top : 10px;
+  text-align : center;
+  width      : 100%;
 }
 
 img {
@@ -54,8 +60,8 @@ nav a.router-link-exact-active:hover {
 }
 
 nav a {
-  display: inline-block;
-  padding: 0 1rem;
+  display    : inline-block;
+  padding    : 0 1rem;
   border-left: 1px solid var(--color-border);
 }
 
